@@ -1,0 +1,22 @@
+name: Redeliver failed webhooks
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      since:
+        description: Optional ISO timestamp to look back to
+        required: false
+permissions:
+  contents: read
+  actions: write   # cache save for the cursor
+jobs:
+  redeliver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: 5012763083a-oss/webhook-redeliver-action@v1
+        with:
+          hook_id: "123456789"
+          since: ${{ inputs.since }}
+          token: ${{ secrets.WEBHOOK_REDELIVER_TOKEN }}

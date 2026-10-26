@@ -1,0 +1,33 @@
+name: Webhook Redeliver
+description: Automatically redeliver failed GitHub repository webhook deliveries on a schedule. Zero infra.
+author: gmitchell
+branding:
+  icon: refresh-cw
+  color: blue
+inputs:
+  hook_id:
+    description: Numeric webhook ID (Settings > Webhooks > the number in the URL)
+    required: true
+  owner:
+    description: Repository owner (defaults to the current repository owner)
+    required: false
+  repo:
+    description: Repository name (defaults to the current repository)
+    required: false
+  scope:
+    description: "Webhook scope. Only `repo` is supported for now; `org` fails with a clear error."
+    required: false
+    default: repo
+  since:
+    description: Optional ISO-8601 timestamp; only deliveries at or after it are considered (overrides the cached cursor)
+    required: false
+  token:
+    description: Token with admin:repo_hook (classic PAT) or Webhooks read/write (fine-grained). Defaults to env GITHUB_TOKEN.
+    required: false
+outputs:
+  scanned: { description: Deliveries scanned }
+  redelivered: { description: Redeliveries accepted }
+  failed: { description: Redelivery requests that failed }
+runs:
+  using: node20
+  main: dist/index.js
